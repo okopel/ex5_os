@@ -3,4 +3,4 @@ project(ex51 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(ex51 library.c library.h main.c)
+add_executable(ex51 main.c)

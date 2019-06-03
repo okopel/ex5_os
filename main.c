@@ -1,5 +1,5 @@
-#include "library.h"
+
 
 int main() {
-    hello();
+    printf("hoo");
 }
