@@ -7,27 +7,40 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
-
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <string.h>
+#define STDERR 2
+#define ERR_MSG "Error in system call\n"
 
 char getch();
 
-int flag = 0;
+void printError();
 
-void mySig() {
-    printf("signal has sent\n");
-    signal(SIGUSR2, mySig);
+void father(int pid, int writer);
+
+
+int main() {
+    int fd[2];
+    pipe(fd);
+    pid_t status = fork();
+    if (status < 0) {
+        printError();
+    } else if (status == 0) {//child
+        dup2(fd[0], 0);
+        execlp("./draw.out", "./draw.out", NULL);
+        printError();
+    } else { //father
+        father(status, fd[1]);
+
+    }
+
+//close(fd[0]);//todo close from father?
+//close(fd[1]);
 }
 
-void child() {
-    pause();
-    printf("INTERAPT!!");
-    child();
-    /*char d[100];
-    do {
-        read(pipeReader, d, sizeof(d));
-        sleep(1);
-    } while (d[0] != 'q');*/
-
+void printError() {
+    write(STDERR, ERR_MSG, strlen(ERR_MSG));
 }
 
 void father(int status, int pipeWriter) {
@@ -37,30 +50,13 @@ void father(int status, int pipeWriter) {
         c = getch();
         if (c == 'a' || c == 's' || c == 'd' || c == 'w' || c == 'q') {
             buf[0] = c;
-            write(pipeWriter, buf, sizeof(buf));
+            if (write(pipeWriter, &buf, sizeof(buf)) < 0) {
+                printError();
+            }
             kill(status, SIGUSR2);
             printf("c: %c\n", c);
         }
     } while (c != 'q');
-}
-
-int main() {
-    int fd[2];
-    pipe(fd);
-    pid_t status;
-    signal(SIGUSR2, mySig);
-
-    status = fork();
-
-    if (status == 0) {//child
-        signal(SIGUSR2, mySig);
-        child();
-        //exit(1);
-    } else { //father
-        father(status, fd[1]);
-    }
-    //close(filedes[0]);//todo close from father?
-    //close(filedes[1]);
 }
 
 /**
