@@ -37,7 +37,7 @@ void father(int pid, int writer);
 
 
 int main() {
-    //pipe address
+    //pipe des
     int fd[2];
     pipe(fd);
     pid_t status = fork();

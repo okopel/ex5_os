@@ -70,6 +70,7 @@ void rotate();
 
 int main() {
     initializeBoard();
+    //set the signals
     signal(SIGUSR2, userPlay);
     signal(SIGALRM, autoPlay);
     alarm(1);
