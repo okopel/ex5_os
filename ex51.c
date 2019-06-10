@@ -54,7 +54,6 @@ void father(int status, int pipeWriter) {
                 printError();
             }
             kill(status, SIGUSR2);
-            printf("c: %c\n", c);
         }
     } while (c != 'q');
 }

@@ -14,7 +14,7 @@
 #define B_SIZE 20
 char board[B_SIZE][B_SIZE];
 int place = B_SIZE / 2;
-int placeH = B_SIZE;
+int placeH = 0;
 bool up = false;
 
 void down();
@@ -39,27 +39,21 @@ void userPlay();
 
 //##########################################
 void userPlay() {
-    erasePrevStep();
     char c = getchar();
     switch (c) {
         case 'a':
-            printf("a");
             left();
             break;
         case 'd':
-            printf("d");
             right();
             break;
         case 's':
-            printf("s");
             down();
             break;
         case 'w':
-            printf("w");
             rotate();
             break;
         case 'q':
-            printf("q");
             exit(1);
         default:
             //the last step
@@ -84,9 +78,9 @@ void initionBoard() {
 }
 
 void autoPlay() {
-    signal(SIGUSR2, autoPlay);
+    signal(SIGALRM, autoPlay);
     alarm(1);
-    erasePrevStep();
+    //erasePrevStep();
     down();
 }
 
@@ -121,44 +115,44 @@ void printBoard() {
 
 
 void left() {
-    if ((place < 2 && !up) || (place < 1 && up)) {
+    if ((place < 3 && !up) || (place < 2 && up)) {
         return;
     }
+    erasePrevStep();
     place--;
     printBoard();
 }
 
 void right() {
-    if ((place > (B_SIZE - 1) && !up) || (place > B_SIZE && up)) {
+    if ((place > (B_SIZE - 2) && !up) || (place > (B_SIZE - 1) && up)) {
         return;
     }
+    erasePrevStep();
     place++;
     printBoard();
 
 }
 
 void down() {
-    if ((placeH == 0 && !up) || (placeH == 1 && up)) {
-        placeH = B_SIZE;
+    if ((placeH == (B_SIZE - 1) && !up) || (placeH == (B_SIZE - 2) && up)) {
+        placeH = 0;
     } else {
-        placeH--;
+        erasePrevStep();
+        placeH++;
+        printBoard();
     }
-    printBoard();
 
 }
 
 void rotate() {
-    if ((placeH == 1 && !up) || ((place == 0 || place == B_SIZE - 1) && up)) {
+    if ((placeH == B_SIZE && !up) || ((place == 0 || place == B_SIZE - 1) && up)) {
         return;
     }
+    erasePrevStep();
     up = !up;
     printBoard();
 }
 
-void child() {
-    pause();
-    child();
-}
 
 void main() {
     initionBoard();
