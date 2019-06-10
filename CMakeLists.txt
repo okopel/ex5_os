@@ -1,0 +1,1 @@
+add_executable(ex52.c ex51.c)
