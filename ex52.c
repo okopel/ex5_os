@@ -124,7 +124,7 @@ void left() {
 }
 
 void right() {
-    if ((place > (B_SIZE - 2) && !up) || (place > (B_SIZE - 1) && up)) {
+    if ((place > (B_SIZE - 4) && !up) || (place > (B_SIZE - 3) && up)) {
         return;
     }
     erasePrevStep();
@@ -134,18 +134,18 @@ void right() {
 }
 
 void down() {
-    if ((placeH == (B_SIZE - 1) && !up) || (placeH == (B_SIZE - 2) && up)) {
+    erasePrevStep();
+    if ((placeH >= (B_SIZE - 2) && !up) || (placeH >= (B_SIZE - 3) && up)) {
         placeH = 0;
     } else {
-        erasePrevStep();
         placeH++;
-        printBoard();
     }
+    printBoard();
 
 }
 
 void rotate() {
-    if ((placeH == B_SIZE && !up) || ((place == 0 || place == B_SIZE - 1) && up)) {
+    if ((placeH >= (B_SIZE - 2) && !up) || ((place <= 1 || place >= B_SIZE - 2) && up)) {
         return;
     }
     erasePrevStep();
